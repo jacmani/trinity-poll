@@ -7,7 +7,7 @@
 A resident polling app for **Trinity World Apartments**, Kochi, Kerala.
 Built for the **Trinity World Apartments Owners Association (TWAOA)** to gauge resident interest in sports screenings at the Party Hall.
 
-**Live URL:** https://trinity-poll.vercel.app *(update once deployed)*
+**Live URL:** https://trinity-poll.vercel.app
 **GitHub:** https://github.com/jacmani/trinity-poll
 **Deployed via:** Vercel (auto-deploys on every push to `main`)
 

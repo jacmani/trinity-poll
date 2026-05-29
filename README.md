@@ -131,7 +131,7 @@ In Supabase Table Editor → click the download icon → Export as CSV
 >
 > We're planning sports screenings at the Party Hall this season!
 > Take 60 seconds to tell us what you'd like to watch:
-> 👉 [your-vercel-url]
+> 👉 https://trinity-poll.vercel.app
 >
 > — Trinity World Residents Association
 
