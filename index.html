@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Trinity World — Party Hall Sports Poll</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700;1,800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════════════ */
+:root {
+  /* Dark mode (default) */
+  --bg:            #080B14;
+  --bg-mid:        #0D1220;
+  --surface:       rgba(255,255,255,0.05);
+  --surface-hover: rgba(255,255,255,0.08);
+  --glass-border:  rgba(255,255,255,0.10);
+  --glass-shine:   rgba(255,255,255,0.07);
+  --text-primary:  #F0EDE8;
+  --text-secondary:rgba(240,237,232,0.55);
+  --text-muted:    rgba(240,237,232,0.35);
+  --gold:          #C9922A;
+  --gold-bright:   #E8B84A;
+  --gold-dim:      rgba(201,146,42,0.25);
+  --rust:          #B84E2C;
+  --rust-dim:      rgba(184,78,44,0.20);
+  --green-glow:    rgba(27,107,58,0.55);
+  --blue-glow:     rgba(27,59,107,0.55);
+  --violet-glow:   rgba(107,27,90,0.55);
+  --moss-glow:     rgba(107,90,27,0.45);
+  --orange-glow:   rgba(107,46,27,0.55);
+  --steel-glow:    rgba(27,74,107,0.55);
+  --orb1:          rgba(201,146,42,0.18);
+  --orb2:          rgba(27,107,90,0.15);
+  --orb3:          rgba(122,46,28,0.12);
+  --countdown-bg:  rgba(184,78,44,0.85);
+  --ticker-bg:     rgba(201,146,42,0.12);
+  --ticker-border: rgba(201,146,42,0.25);
+  --bar-track:     rgba(255,255,255,0.08);
+  --shadow-deep:   0 24px 64px rgba(0,0,0,0.6);
+  --shadow-card:   0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 var(--glass-shine);
+  --radius-sm:     10px;
+  --radius-md:     18px;
+  --radius-lg:     26px;
+  --radius-xl:     36px;
+}
+
+[data-theme="light"] {
+  --bg:            #F5F0E8;
+  --bg-mid:        #EDE6D8;
+  --surface:       rgba(255,255,255,0.75);
+  --surface-hover: rgba(255,255,255,0.90);
+  --glass-border:  rgba(60,40,20,0.10);
+  --glass-shine:   rgba(255,255,255,0.80);
+  --text-primary:  #1A1208;
+  --text-secondary:rgba(26,18,8,0.60);
+  --text-muted:    rgba(26,18,8,0.38);
+  --gold:          #A8740E;
+  --gold-bright:   #C9922A;
+  --gold-dim:      rgba(168,116,14,0.15);
+  --rust:          #963C1E;
+  --rust-dim:      rgba(150,60,30,0.12);
+  --green-glow:    rgba(27,107,58,0.12);
+  --blue-glow:     rgba(27,59,107,0.12);
+  --violet-glow:   rgba(107,27,90,0.10);
+  --moss-glow:     rgba(107,90,27,0.10);
+  --orange-glow:   rgba(107,46,27,0.12);
+  --steel-glow:    rgba(27,74,107,0.10);
+  --orb1:          rgba(201,146,42,0.12);
+  --orb2:          rgba(27,107,90,0.08);
+  --orb3:          rgba(184,78,44,0.07);
+  --countdown-bg:  rgba(150,60,30,0.90);
+  --ticker-bg:     rgba(168,116,14,0.08);
+  --ticker-border: rgba(168,116,14,0.20);
+  --bar-track:     rgba(26,18,8,0.08);
+  --shadow-deep:   0 24px 64px rgba(60,40,20,0.15);
+  --shadow-card:   0 8px 32px rgba(60,40,20,0.10), inset 0 1px 0 var(--glass-shine);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.5s ease, color 0.4s ease;
+}
+
+/* ═══════════════════════════════════════════════════════
+   AMBIENT BACKGROUND SYSTEM
+═══════════════════════════════════════════════════════ */
+.ambient-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform;
+}
+
+.orb-1 {
+  width: 60vw; height: 60vw;
+  max-width: 420px; max-height: 420px;
+  background: radial-gradient(circle, var(--orb1) 0%, transparent 70%);
+  top: -10%; left: -15%;
+  animation: drift-1 28s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 70vw; height: 70vw;
+  max-width: 500px; max-height: 500px;
+  background: radial-gradient(circle, var(--orb2) 0%, transparent 70%);
+  bottom: 10%; right: -20%;
+  animation: drift-2 35s ease-in-out infinite;
+}
+
+.orb-3 {
+  width: 45vw; height: 45vw;
+  max-width: 340px; max-height: 340px;
+  background: radial-gradient(circle, var(--orb3) 0%, transparent 70%);
+  top: 45%; left: 30%;
+  animation: drift-3 22s ease-in-out infinite;
+}
+
+@keyframes drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(8vw, 6vh) scale(1.08); }
+  66%       { transform: translate(-4vw, 10vh) scale(0.94); }
+}
+@keyframes drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-10vw, -8vh) scale(1.12); }
+  70%       { transform: translate(5vw, -4vh) scale(0.96); }
+}
+@keyframes drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(-6vw, 8vh) scale(1.15); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   STAR FIELD CANVAS — JS drawn, hidden in light mode
+═══════════════════════════════════════════════════════ */
+#star-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+[data-theme="light"] #star-canvas { opacity: 0; }
+
+/* ═══════════════════════════════════════════════════════
+   SHOOTING STARS
+═══════════════════════════════════════════════════════ */
+.shooting-star {
+  position: fixed;
+  top: var(--sy);
+  left: var(--sx);
+  width: var(--sw);
+  height: 1.5px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,240,0.95) 45%,
+    rgba(201,146,42,0.7) 75%,
+    rgba(255,255,255,0) 100%);
+  border-radius: 999px;
+  transform: rotate(var(--sa));
+  transform-origin: left center;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(0.4px);
+}
+
+.shooting-star.fire {
+  animation: shoot var(--sd) cubic-bezier(0.3, 0, 0.5, 1) forwards;
+}
+
+@keyframes shoot {
+  0%   { opacity: 0;   transform: rotate(var(--sa)) translateX(0); }
+  6%   { opacity: 1; }
+  88%  { opacity: 0.7; }
+  100% { opacity: 0;   transform: rotate(var(--sa)) translateX(var(--sw)); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   LIGHT MODE — rangoli dot grid canvas
+═══════════════════════════════════════════════════════ */
+#rangoli-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+[data-theme="light"] #rangoli-canvas { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════
+   FLOATING PARTICLES — sine-wave ember drift
+═══════════════════════════════════════════════════════ */
+.particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0;
+  animation: float-up var(--dur) linear var(--del) infinite;
+}
+
+@keyframes float-up {
+  0%   { transform: translate(0, 0)                          scale(1);    opacity: 0; }
+  8%   { opacity: var(--peak, 0.7); }
+  25%  { transform: translate(calc(var(--drift) * 0.35), -25vh)  scale(0.95); }
+  50%  { transform: translate(calc(var(--drift) * -0.2), -50vh)  scale(0.85); }
+  75%  { transform: translate(calc(var(--drift) * 0.55), -75vh)  scale(0.7); opacity: calc(var(--peak, 0.5) * 0.6); }
+  100% { transform: translate(var(--drift), -102vh)          scale(0.4);  opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODE TOGGLE — Fixed top-right
+═══════════════════════════════════════════════════════ */
+.mode-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-card);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.mode-toggle:active { transform: scale(0.90); }
+.mode-toggle:hover  { background: var(--surface-hover); }
+
+/* ═══════════════════════════════════════════════════════
+   PAGE WRAPPER
+═══════════════════════════════════════════════════════ */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 0 1.125rem 4rem;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════════════ */
+.hero {
+  text-align: center;
+  padding: 4.5rem 1rem 2.5rem;
+  position: relative;
+}
+
+.monogram-ring {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.75rem;
+}
+
+.monogram-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold-dim);
+  position: relative;
+  animation: slow-pulse 4s ease-in-out infinite;
+}
+
+/* Inner halo ring */
+.monogram-circle::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(201,146,42,0.2);
+  animation: slow-pulse 4s ease-in-out infinite reverse;
+}
+
+/* Outer orbit ring — slow rotation */
+.monogram-circle::after {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 1px dashed rgba(201,146,42,0.35);
+  animation: orbit-spin 12s linear infinite;
+}
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Orbit dot — a bright dot that travels the orbit ring */
+.monogram-orbit-dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: var(--gold-bright);
+  border-radius: 50%;
+  top: -16px;
+  left: 50%;
+  margin-left: -2.5px;
+  box-shadow: 0 0 6px 2px rgba(201,146,42,0.6);
+  transform-origin: 2.5px calc(100% + 30px);
+  animation: orbit-dot 12s linear infinite;
+  z-index: 2;
+}
+
+@keyframes orbit-dot {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes slow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,146,42,0); }
+  50%       { box-shadow: 0 0 32px 8px rgba(201,146,42,0.15); }
+}
+
+.monogram-letters {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.monogram-wordmark {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  opacity: 0.85;
+}
+
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 9vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.08;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold-bright);
+}
+
+.hero-sub {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════
+   COUNTDOWN STRIP
+═══════════════════════════════════════════════════════ */
+.countdown-strip {
+  background: var(--countdown-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.cd-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  white-space: nowrap;
+}
+
+.cd-units {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.cd-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0,0,0,0.25);
+  border-radius: 8px;
+  padding: 5px 8px;
+  min-width: 38px;
+}
+
+.cd-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+}
+
+.cd-sub {
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.6);
+  margin-top: 2px;
+}
+
+.cd-colon {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  padding-bottom: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PARTICIPATION PULSE
+═══════════════════════════════════════════════════════ */
+.pulse-bar {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 13px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-card);
+}
+
+.pulse-dot-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+}
+
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  background: #4ADE80;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.pulse-ring {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+  border: 2px solid #4ADE80;
+  border-radius: 50%;
+  position: absolute;
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+
+.pulse-text {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.pulse-text strong {
+  color: var(--gold-bright);
+  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   GLASS CARD SECTION WRAPPER
+═══════════════════════════════════════════════════════ */
+.glass-section {
+  background: var(--surface);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+/* Floating parallax on hover/active — cards lift */
+.glass-section:hover {
+  box-shadow: var(--shadow-card), 0 16px 48px rgba(0,0,0,0.25);
+  transform: translateY(-2px);
+}
+
+.glass-section:active {
+  transform: translateY(0px);
+}
+
+.glass-section.visible {
+  animation: reveal-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes reveal-up {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* After reveal, re-enable hover transform */
+.glass-section.visible:hover {
+  transform: translateY(-2px);
+}
+.glass-section.visible:active {
+  transform: translateY(0);
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-dim), transparent);
+}
+
+.section-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: -8px 0 14px;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════
+   INPUTS
+═══════════════════════════════════════════════════════ */
+.field-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--surface-hover);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.4s;
+  -webkit-appearance: none;
+}
+
+.field-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,146,42,0.15);
+  background: var(--surface);
+}
+
+.field-input::placeholder { color: var(--text-muted); }
+
+/* ═══════════════════════════════════════════════════════
+   TOWER CHIPS
+═══════════════════════════════════════════════════════ */
+.tower-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 9px;
+}
+
+.tower-chip {
+  background: var(--surface-hover);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 6px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.tower-chip:active { transform: scale(0.92); }
+
+.tower-chip.selected {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  box-shadow: 0 0 20px rgba(201,146,42,0.2);
+}
+
+.tower-glyph {
+  font-size: 22px;
+  line-height: 1;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.tower-chip.selected .tower-glyph { color: var(--gold-bright); }
+
+.tower-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+
+.tower-chip.selected .tower-name { color: var(--gold); }
+
+/* ═══════════════════════════════════════════════════════
+   SPORT CARDS — 2-col grid with glow system
+═══════════════════════════════════════════════════════ */
+.sport-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.sport-card {
+  background: var(--surface-hover);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 16px 14px 14px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Glow layer */
+.sport-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.sport-card:active { transform: scale(0.95); }
+
+.sport-card.selected {
+  border-color: rgba(255,255,255,0.22);
+}
+
+.sport-card.selected::before { opacity: 1; }
+
+/* Per-sport glow colours */
+.sport-card[data-sport="ipl"]          { --glow: var(--green-glow); }
+.sport-card[data-sport="ucl"]          { --glow: var(--blue-glow); }
+.sport-card[data-sport="womens-t20"]   { --glow: var(--violet-glow); }
+.sport-card[data-sport="fifa"]         { --glow: var(--blue-glow); }
+.sport-card[data-sport="cricket-india"]{ --glow: var(--green-glow); }
+.sport-card[data-sport="wimbledon"]    { --glow: var(--moss-glow); }
+.sport-card[data-sport="f1"]           { --glow: var(--orange-glow); }
+.sport-card[data-sport="cwg"]          { --glow: var(--steel-glow); }
+
+.sport-card::before { background: var(--glow); }
+
+.sport-check {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.3) rotate(-90deg);
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sport-card.selected .sport-check {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.sport-check svg {
+  width: 10px; height: 10px;
+  stroke: #fff; stroke-width: 2.5; fill: none;
+}
+
+.sport-emoji {
+  font-size: 26px;
+  display: block;
+  margin-bottom: 8px;
+  position: relative; z-index: 1;
+}
+
+.sport-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  position: relative; z-index: 1;
+  transition: color 0.2s;
+}
+
+.sport-when {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.4;
+  position: relative; z-index: 1;
+}
+
+.sport-hot {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--rust);
+  color: #fff;
+  border-radius: 5px;
+  padding: 2px 7px;
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+  position: relative; z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════
+   OPTION LIST (timing)
+═══════════════════════════════════════════════════════ */
+.option-list { display: flex; flex-direction: column; gap: 9px; }
+
+.option-item {
+  background: var(--surface-hover);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 15px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.option-item:active { transform: scale(0.98); }
+
+.option-item.selected {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  box-shadow: 0 0 24px rgba(201,146,42,0.12);
+}
+
+.option-radio {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--glass-border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  background: var(--surface);
+}
+
+.option-item.selected .option-radio {
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 12px rgba(201,146,42,0.4);
+}
+
+.option-item.selected .option-radio::after {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.option-body { flex: 1; min-width: 0; }
+
+.option-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.option-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.45;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CHIP GRID (frequency)
+═══════════════════════════════════════════════════════ */
+.chip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.chip-item {
+  background: var(--surface-hover);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 15px 12px 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.chip-item:active { transform: scale(0.95); }
+
+.chip-item.selected {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  box-shadow: 0 0 20px rgba(201,146,42,0.12);
+}
+
+.chip-item.selected .chip-title { color: var(--gold-bright); }
+
+.chip-item .sport-check {
+  position: absolute;
+  top: 9px; right: 9px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.3) rotate(-90deg);
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.chip-item.selected .sport-check {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.chip-item .sport-check svg {
+  width: 9px; height: 9px;
+  stroke: #fff; stroke-width: 2.5; fill: none;
+}
+
+.chip-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.chip-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FIELD ERROR
+═══════════════════════════════════════════════════════ */
+.field-error {
+  font-size: 12px;
+  color: #FCA5A5;
+  margin-top: 8px;
+  display: none;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+[data-theme="light"] .field-error { color: #9B1C1C; }
+
+/* ═══════════════════════════════════════════════════════
+   SUBMIT BUTTON
+═══════════════════════════════════════════════════════ */
+.submit-wrap {
+  margin-top: 20px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 18px 24px;
+  background: linear-gradient(135deg, #B8770E 0%, #C9922A 40%, #E8B84A 70%, #C9922A 100%);
+  background-size: 200% 100%;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-weight: 700;
+  font-style: italic;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 32px rgba(201,146,42,0.35), 0 2px 8px rgba(0,0,0,0.3);
+  animation: shimmer-sweep 3.5s linear infinite;
+}
+
+@keyframes shimmer-sweep {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.submit-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: btn-shine 3.5s ease-in-out infinite 1.5s;
+}
+
+@keyframes btn-shine {
+  0%   { left: -60%; }
+  100% { left: 160%; }
+}
+
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,146,42,0.45), 0 4px 12px rgba(0,0,0,0.3); }
+.submit-btn:active { transform: translateY(0) scale(0.98); }
+.submit-btn:disabled { background: var(--surface-hover); color: var(--text-muted); box-shadow: none; animation: none; cursor: not-allowed; transform: none; }
+.submit-btn:disabled::after { display: none; }
+
+.submit-note {
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 11px;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════
+   VOTED BANNER
+═══════════════════════════════════════════════════════ */
+.voted-banner {
+  display: none;
+  background: rgba(74,222,128,0.08);
+  border: 1px solid rgba(74,222,128,0.25);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  align-items: center;
+  gap: 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.voted-banner.show { display: flex; }
+
+.voted-icon { font-size: 22px; flex-shrink: 0; }
+
+.voted-text {
+  font-size: 13.5px;
+  color: #4ADE80;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+[data-theme="light"] .voted-text { color: #15803D; }
+[data-theme="light"] .voted-banner { background: rgba(21,128,61,0.06); border-color: rgba(21,128,61,0.2); }
+
+/* ═══════════════════════════════════════════════════════
+   SUCCESS SCREEN
+═══════════════════════════════════════════════════════ */
+#success-screen { display: none; }
+
+.success-hero {
+  text-align: center;
+  padding: 5rem 1rem 3rem;
+  position: relative;
+}
+
+.success-ring {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  background: var(--gold-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 38px;
+  animation: success-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+             slow-pulse 4s ease-in-out 0.6s infinite;
+}
+
+@keyframes success-pop {
+  from { transform: scale(0) rotate(-20deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.success-hero h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 8vw, 2.8rem);
+  font-weight: 800;
+  font-style: italic;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.success-hero p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LIVE TICKER
+═══════════════════════════════════════════════════════ */
+.ticker-wrap {
+  background: var(--ticker-bg);
+  border-top: 1px solid var(--ticker-border);
+  border-bottom: 1px solid var(--ticker-border);
+  overflow: hidden;
+  padding: 10px 0;
+  margin-bottom: 0;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.ticker-track {
+  display: flex;
+  white-space: nowrap;
+  animation: ticker 26s linear infinite;
+  will-change: transform;
+}
+
+.ticker-track:hover { animation-play-state: paused; }
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 22px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  border-right: 1px solid var(--glass-border);
+  flex-shrink: 0;
+}
+
+.ticker-item strong { color: var(--gold-bright); font-weight: 700; }
+
+.ticker-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(184,78,44,0.25);
+  border: 1px solid rgba(184,78,44,0.4);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #FCA5A5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.ticker-live::before {
+  content: '';
+  width: 5px; height: 5px;
+  background: #FCA5A5;
+  border-radius: 50%;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0.3; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESULTS PANEL
+═══════════════════════════════════════════════════════ */
+.results-wrap {
+  padding: 0;
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.75rem 0 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.results-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--rust-dim);
+  border: 1px solid rgba(184,78,44,0.3);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #FCA5A5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+[data-theme="light"] .live-badge { color: var(--rust); background: rgba(150,60,30,0.08); }
+
+.live-dot {
+  width: 6px; height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+.results-total {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.results-total strong {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold-bright);
+}
+
+.result-cat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  margin-top: 1.5rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 12px;
+}
+
+.result-emoji {
+  font-size: 17px;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+.result-right { flex: 1; min-width: 0; }
+
+.result-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+  gap: 8px;
+}
+
+.result-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-stat {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-track {
+  height: 6px;
+  background: var(--bar-track);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.result-fill {
+  height: 100%;
+  border-radius: 999px;
+  width: 0%;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+
+.result-fill::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 20px;
+  background: inherit;
+  filter: blur(4px) brightness(1.6);
+  border-radius: 999px;
+}
+
+.result-fill.sport  { background: linear-gradient(90deg, var(--gold) 0%, var(--gold-bright) 100%); }
+.result-fill.timing { background: linear-gradient(90deg, #3B6B9B 0%, #5B8DBF 100%); }
+.result-fill.freq   { background: linear-gradient(90deg, #2A7A55 0%, #4AAD80 100%); }
+
+/* ═══════════════════════════════════════════════════════
+   CONFETTI CANVAS
+═══════════════════════════════════════════════════════ */
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ═══════════════════════════════════════════════════════
+   STAGGER DELAYS
+═══════════════════════════════════════════════════════ */
+.glass-section:nth-child(1){animation-delay:0.05s}
+.glass-section:nth-child(2){animation-delay:0.12s}
+.glass-section:nth-child(3){animation-delay:0.19s}
+.glass-section:nth-child(4){animation-delay:0.26s}
+.glass-section:nth-child(5){animation-delay:0.33s}
+
+</style>
+</head>
+<body>
+
+<!-- ════════════════ AMBIENT SYSTEM ════════════════ -->
+<div class="ambient-canvas" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<canvas id="star-canvas" aria-hidden="true"></canvas>
+<canvas id="rangoli-canvas" aria-hidden="true"></canvas>
+<div class="particles" id="particles" aria-hidden="true"></div>
+
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<!-- ════════════════ MODE TOGGLE ════════════════ -->
+<button class="mode-toggle" id="mode-toggle" onclick="toggleMode()" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">🌙</button>
+
+<!-- ════════════════════════════════════════════════════
+     POLL SCREEN
+════════════════════════════════════════════════════ -->
+<div id="poll-screen">
+  <div class="page">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="monogram-ring">
+        <div class="monogram-circle">
+          <span class="monogram-letters">TW</span>
+          <span class="monogram-orbit-dot"></span>
+        </div>
+        <span class="monogram-wordmark">Trinity World · Kochi</span>
+      </div>
+      <p class="hero-eyebrow">Residents Association</p>
+      <h1>Party Hall<br><em>Sports Screening</em></h1>
+      <p class="hero-sub">Dear Residents, take a minute to help us plan the perfect sports schedule for our Party Hall this season.</p>
+    </div>
+
+    <!-- Countdown -->
+    <div class="countdown-strip">
+      <span class="cd-label">⚡ Poll closes in</span>
+      <div class="cd-units">
+        <div class="cd-unit"><span class="cd-num" id="cd-d">07</span><span class="cd-sub">days</span></div>
+        <span class="cd-colon">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-h">00</span><span class="cd-sub">hrs</span></div>
+        <span class="cd-colon">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-m">00</span><span class="cd-sub">min</span></div>
+        <span class="cd-colon">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-s">00</span><span class="cd-sub">sec</span></div>
+      </div>
+    </div>
+
+    <!-- Pulse bar -->
+    <div class="pulse-bar">
+      <div class="pulse-dot-wrap">
+        <div class="pulse-ring"></div>
+        <div class="pulse-dot"></div>
+      </div>
+      <p class="pulse-text"><strong id="vote-count-hero">—</strong> of 841 residents have voted</p>
+    </div>
+
+    <!-- Voted banner -->
+    <div class="voted-banner" id="voted-banner">
+      <span class="voted-icon">✅</span>
+      <span class="voted-text">You've already submitted your preferences. See the live results below!</span>
+    </div>
+
+    <!-- Form -->
+    <div id="form-body">
+
+      <!-- Name -->
+      <div class="glass-section">
+        <div class="section-label">Your name</div>
+        <p class="section-note">Optional — helps us personalise announcements</p>
+        <input class="field-input" type="text" id="voter-name" placeholder="e.g. Priya Menon" maxlength="40" autocomplete="name">
+      </div>
+
+      <!-- Tower -->
+      <div class="glass-section">
+        <div class="section-label">Your tower</div>
+        <div class="tower-grid">
+          <div class="tower-chip" data-tower="Venus" onclick="selectTower(this)">
+            <div class="tower-glyph">♀</div>
+            <div class="tower-name">Venus</div>
+          </div>
+          <div class="tower-chip" data-tower="Jupiter" onclick="selectTower(this)">
+            <div class="tower-glyph">♃</div>
+            <div class="tower-name">Jupiter</div>
+          </div>
+          <div class="tower-chip" data-tower="Neptune" onclick="selectTower(this)">
+            <div class="tower-glyph">♆</div>
+            <div class="tower-name">Neptune</div>
+          </div>
+          <div class="tower-chip" data-tower="Mercury" onclick="selectTower(this)">
+            <div class="tower-glyph">☿</div>
+            <div class="tower-name">Mercury</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sports -->
+      <div class="glass-section">
+        <div class="section-label">Which sports to screen?</div>
+        <p class="section-note">Pick everything you'd watch — multiple welcome</p>
+        <div class="sport-grid">
+
+          <div class="sport-card" data-sport="ipl" onclick="toggleSport(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <span class="sport-emoji">🏏</span>
+            <div class="sport-name">IPL 2026</div>
+            <div class="sport-when">Playoffs & Final</div>
+            <span class="sport-hot">This week!</span>
+          </div>
+
+          <div class="sport-card" data-sport="ucl" onclick="toggleSport(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <span class="sport-emoji">⭐</span>
+            <div class="sport-name">Champions League</div>
+            <div class="sport-when">UCL Final — May 30</div>
+            <span class="sport-hot">5 days!</span>
+          </div>
+
+          <div class="sport-card" data-sport="womens-t20" onclick="toggleSport(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <span class="sport-emoji">🏆</span>
+            <div class="sport-name">Women's T20 WC</div>
+            <div class="sport-when">England, Jun 12–Jul 5</div>
+          </div>
+
+          <div class="sport-card" data-sport="fifa" onclick="toggleSport(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <span class="sport-emoji">🌍</span>
+            <div class="sport-name">FIFA World Cup</div>
+            <div class="sport-when">Jun 11 – Jul 19</div>
+          </div>
+
+          <div class="sport-card" data-sport="cricket-india" onclick="toggleSport(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <span class="sport-emoji">🏏</span>
+            <div class="sport-name">India Cricket</div>
+            <div class="sport-when">Intl. tours, Jun–Aug</div>
+          </div>
+
+          <div class="sport-card" data-sport="wimbledon" onclick="toggleSport(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <span class="sport-emoji">🎾</span>
+            <div class="sport-name">Wimbledon 2026</div>
+            <div class="sport-when">Jun 29 – Jul 12</div>
+          </div>
+
+          <div class="sport-card" data-sport="f1" onclick="toggleSport(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <span class="sport-emoji">🏎</span>
+            <div class="sport-name">Formula 1</div>
+            <div class="sport-when">British & Hungarian GP</div>
+          </div>
+
+          <div class="sport-card" data-sport="cwg" onclick="toggleSport(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <span class="sport-emoji">🏅</span>
+            <div class="sport-name">Commonwealth Games</div>
+            <div class="sport-when">Glasgow, Jul 23–Aug 2</div>
+          </div>
+
+        </div>
+        <div class="field-error" id="sport-error">⚠ Please pick at least one sport.</div>
+      </div>
+
+      <!-- Timing -->
+      <div class="glass-section">
+        <div class="section-label">Best time to attend?</div>
+        <div class="option-list">
+
+          <div class="option-item" data-timing="evening" onclick="selectOption(this,'timing')">
+            <div class="option-radio"></div>
+            <div class="option-body">
+              <div class="option-title">🌆 Evenings (7 PM – 11 PM)</div>
+              <div class="option-sub">Best for IPL, cricket & Women's T20 WC</div>
+            </div>
+          </div>
+
+          <div class="option-item" data-timing="latenight" onclick="selectOption(this,'timing')">
+            <div class="option-radio"></div>
+            <div class="option-body">
+              <div class="option-title">🌙 Late nights (11 PM – 2 AM)</div>
+              <div class="option-sub">For FIFA World Cup from North America</div>
+            </div>
+          </div>
+
+          <div class="option-item" data-timing="both" onclick="selectOption(this,'timing')">
+            <div class="option-radio"></div>
+            <div class="option-body">
+              <div class="option-title">✅ Both — I'm flexible!</div>
+              <div class="option-sub">Happy to join for any time slot</div>
+            </div>
+          </div>
+
+          <div class="option-item" data-timing="weekend" onclick="selectOption(this,'timing')">
+            <div class="option-radio"></div>
+            <div class="option-body">
+              <div class="option-title">📅 Weekends only</div>
+              <div class="option-sub">Weekday evenings don't work for me</div>
+            </div>
+          </div>
+
+        </div>
+        <div class="field-error" id="timing-error">⚠ Please select a timing preference.</div>
+      </div>
+
+      <!-- Frequency -->
+      <div class="glass-section">
+        <div class="section-label">How often should we screen?</div>
+        <p class="section-note">Pick all that apply — multiple welcome</p>
+        <div class="chip-grid">
+          <div class="chip-item" data-freq="every" onclick="toggleFreq(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <div class="chip-title">Every match</div>
+            <div class="chip-sub">Screen everything live</div>
+          </div>
+          <div class="chip-item" data-freq="india" onclick="toggleFreq(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <div class="chip-title">India matches</div>
+            <div class="chip-sub">Only when India plays</div>
+          </div>
+          <div class="chip-item" data-freq="knockouts" onclick="toggleFreq(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <div class="chip-title">Big knockouts</div>
+            <div class="chip-sub">Semis & Finals only</div>
+          </div>
+          <div class="chip-item" data-freq="weekend" onclick="toggleFreq(this)">
+            <div class="sport-check"><svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg></div>
+            <div class="chip-title">Weekends only</div>
+            <div class="chip-sub">Sat & Sun fixtures</div>
+          </div>
+        </div>
+        <div class="field-error" id="freq-error">⚠ Please select at least one option.</div>
+      </div>
+
+      <!-- Comments -->
+      <div class="glass-section">
+        <div class="section-label">Comments & suggestions</div>
+        <p class="section-note">Any specific matches, ideas for snacks, setup requests — we're all ears!</p>
+        <textarea class="field-input" id="voter-comments" placeholder="e.g. Can we get a projector for the FIFA final? Would love samosas during IPL nights! 🍟" rows="4" maxlength="500" style="resize:none; line-height:1.6; font-family:'DM Sans',sans-serif;"></textarea>
+        <div style="text-align:right; font-size:11px; color:var(--text-muted); margin-top:6px;">
+          <span id="comment-count">0</span>/500
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="submit-wrap">
+        <button class="submit-btn" id="submit-btn" onclick="submitPoll()">
+          Cast my vote →
+        </button>
+        <p class="submit-note">One response per device &nbsp;·&nbsp; Live results visible after voting</p>
+      </div>
+
+    </div><!-- /form-body -->
+  </div><!-- /page -->
+</div><!-- /poll-screen -->
+
+
+<!-- ════════════════════════════════════════════════════
+     SUCCESS + RESULTS SCREEN
+════════════════════════════════════════════════════ -->
+<div id="success-screen">
+
+  <div class="page">
+    <div class="success-hero">
+      <div class="success-ring">🎉</div>
+      <h2>Vote Recorded!</h2>
+      <p>Thank you, neighbour. We'll publish the Party Hall screening schedule on the community board very soon.</p>
+    </div>
+  </div>
+
+  <!-- Ticker — full bleed -->
+  <div class="ticker-wrap">
+    <div class="ticker-track" id="ticker-track">
+      <span class="ticker-item"><span class="ticker-live">Live</span>&nbsp; Loading results…</span>
+      <span class="ticker-item"><span class="ticker-live">Live</span>&nbsp; Loading results…</span>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="page results-wrap">
+
+    <div class="results-header">
+      <div class="results-title">Community Interest</div>
+      <div class="live-badge"><div class="live-dot"></div>Live</div>
+    </div>
+
+    <div class="results-total" id="results-total">Loading…</div>
+
+    <div class="result-cat-label">🏆 Sports interest</div>
+    <div id="results-sports"></div>
+
+    <div class="result-cat-label">⏰ Preferred timing</div>
+    <div id="results-timing"></div>
+
+    <div class="result-cat-label">📅 Screening frequency</div>
+    <div id="results-freq"></div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════ -->
+<script>
+
+/* ── CONFIG ─────────────────────────────── */
+const SUPABASE_URL  = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY';
+const TOTAL_UNITS   = 841;
+const STORAGE_KEY   = 'tw_poll_v3';
+const EXPIRY_KEY    = 'tw_poll_expiry_v3';
+const MODE_KEY      = 'tw_mode_v1';
+
+/* ── EXPIRY ─────────────────────────────── */
+let POLL_EXPIRY;
+const storedExpiry = localStorage.getItem(EXPIRY_KEY);
+if (storedExpiry) {
+  POLL_EXPIRY = new Date(parseInt(storedExpiry));
+} else {
+  POLL_EXPIRY = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  localStorage.setItem(EXPIRY_KEY, POLL_EXPIRY.getTime().toString());
+}
+
+/* ── STATE ──────────────────────────────── */
+let selectedSports = new Set();
+let selectedTiming = null;
+let selectedFreqs  = new Set();   // multi-select
+let selectedTower  = null;
+
+/* ── MODE TOGGLE ────────────────────────── */
+function toggleMode() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('mode-toggle').textContent = next === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem(MODE_KEY, next);
+}
+
+function initMode() {
+  const saved = localStorage.getItem(MODE_KEY);
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    document.getElementById('mode-toggle').textContent = saved === 'dark' ? '🌙' : '☀️';
+  }
+}
+
+/* ── STAR FIELD ─────────────────────────── */
+function initStarField() {
+  const canvas = document.getElementById('star-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    drawStars();
+  }
+
+  /* Two layers: static + twinkling */
+  let stars = [];
+
+  function buildStars() {
+    stars = [];
+    const W = canvas.width, H = canvas.height;
+    /* Layer 1 — 90 tiny static stars */
+    for (let i = 0; i < 90; i++) {
+      stars.push({
+        x:       Math.random() * W,
+        y:       Math.random() * H,
+        r:       0.4 + Math.random() * 0.9,
+        opacity: 0.15 + Math.random() * 0.5,
+        twinkle: false
+      });
+    }
+    /* Layer 2 — 30 twinkling stars */
+    for (let i = 0; i < 30; i++) {
+      stars.push({
+        x:       Math.random() * W,
+        y:       Math.random() * H,
+        r:       0.6 + Math.random() * 1.4,
+        opacity: 0.3 + Math.random() * 0.5,
+        twinkle: true,
+        phase:   Math.random() * Math.PI * 2,
+        speed:   0.3 + Math.random() * 0.7,
+        min:     0.1 + Math.random() * 0.2,
+        max:     0.6 + Math.random() * 0.4
+      });
+    }
+  }
+
+  let rafId;
+  function drawStars() {
+    if (rafId) cancelAnimationFrame(rafId);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    if (!isDark) return; /* star canvas hidden in light mode via CSS, skip draw */
+
+    const now = Date.now() / 1000;
+
+    stars.forEach(s => {
+      let op = s.opacity;
+      if (s.twinkle) {
+        op = s.min + (s.max - s.min) * (0.5 + 0.5 * Math.sin(now * s.speed + s.phase));
+      }
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      /* Warm-tinted stars — slight gold/blue variance */
+      const hue = Math.random() > 0.85 ? 'rgba(230,210,180,' : 'rgba(200,215,255,';
+      ctx.fillStyle = `rgba(255,255,245,${op})`;
+      ctx.fill();
+
+      /* Larger twinkling stars get a soft glow */
+      if (s.twinkle && s.r > 1.2 && op > 0.5) {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 2.5, 0, Math.PI * 2);
+        const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 2.5);
+        grad.addColorStop(0, `rgba(220,200,160,${op * 0.3})`);
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+    });
+
+    rafId = requestAnimationFrame(drawStars);
+  }
+
+  buildStars();
+  resize();
+  window.addEventListener('resize', () => { resize(); buildStars(); });
+}
+
+/* ── RANGOLI DOTS (light mode) ──────────── */
+function initRangoli() {
+  const canvas = document.getElementById('rangoli-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function draw() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const spacing = 44;
+    const cols = Math.ceil(canvas.width  / spacing) + 1;
+    const rows = Math.ceil(canvas.height / spacing) + 1;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        /* Offset every other row — hex grid feel */
+        const x = c * spacing + (r % 2 === 0 ? 0 : spacing / 2);
+        const y = r * spacing * 0.88;
+        const distCenter = Math.hypot(x - canvas.width/2, y - canvas.height/2);
+        const alpha = Math.max(0, 0.12 - distCenter / (canvas.width * 1.5));
+        if (alpha <= 0) continue;
+        ctx.beginPath();
+        ctx.arc(x, y, 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(168,116,14,${alpha})`;
+        ctx.fill();
+      }
+    }
+  }
+
+  draw();
+  window.addEventListener('resize', draw);
+}
+
+/* ── SHOOTING STARS ─────────────────────── */
+const MAX_SHOOTERS = 4; /* pool of DOM elements to reuse */
+let shooterPool = [];
+
+function initShootingStars() {
+  /* Pre-create a pool */
+  for (let i = 0; i < MAX_SHOOTERS; i++) {
+    const el = document.createElement('div');
+    el.className = 'shooting-star';
+    document.body.appendChild(el);
+    shooterPool.push({ el, busy: false });
+  }
+  scheduleNextShot();
+}
+
+function scheduleNextShot() {
+  const delay = 7000 + Math.random() * 8000; /* 7–15s between shots */
+  setTimeout(fireShootingStar, delay);
+}
+
+function fireShootingStar() {
+  const slot = shooterPool.find(s => !s.busy);
+  if (!slot) { scheduleNextShot(); return; }
+
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  if (!isDark) { scheduleNextShot(); return; } /* skip in light mode */
+
+  slot.busy = true;
+  const el  = slot.el;
+
+  const W   = window.innerWidth;
+  const H   = window.innerHeight;
+
+  /* Start in top 55% of screen, random x */
+  const sx  = Math.random() * W * 0.7;           /* % from left in px */
+  const sy  = Math.random() * H * 0.45;           /* % from top in px */
+  const len = 120 + Math.random() * 180;          /* tail length px */
+  const ang = 10 + Math.random() * 30;            /* angle deg — shallow diagonal */
+  const dur = (0.6 + Math.random() * 0.7) + 's'; /* 0.6–1.3s */
+
+  el.style.setProperty('--sx', sx + 'px');
+  el.style.setProperty('--sy', sy + 'px');
+  el.style.setProperty('--sw', len + 'px');
+  el.style.setProperty('--sa', ang + 'deg');
+  el.style.setProperty('--sd', dur);
+
+  /* Trigger animation */
+  el.classList.remove('fire');
+  void el.offsetWidth; /* reflow to restart */
+  el.classList.add('fire');
+
+  const totalMs = (parseFloat(dur) * 1000) + 100;
+  setTimeout(() => {
+    el.classList.remove('fire');
+    slot.busy = false;
+    scheduleNextShot();
+  }, totalMs);
+}
+
+/* ── PARTICLES (ember) ──────────────────── */
+function initParticles() {
+  const container = document.getElementById('particles');
+  const count = 28; /* up from 16 */
+  for (let i = 0; i < count; i++) {
+    const p    = document.createElement('div');
+    p.className = 'particle';
+    const size = 1.5 + Math.random() * 3.5;
+    const left = 3 + Math.random() * 94;
+    const dur  = 14 + Math.random() * 20;
+    const del  = -(Math.random() * 20); /* negative = already mid-flight */
+    const drift = (Math.random() - 0.5) * 120;
+    const peak  = 0.4 + Math.random() * 0.45;
+    p.style.cssText = `
+      width:${size}px;
+      height:${size}px;
+      left:${left}%;
+      bottom:-6px;
+      --dur:${dur}s;
+      --del:${del}s;
+      --drift:${drift}px;
+      --peak:${peak};
+    `;
+    container.appendChild(p);
+  }
+}
+
+/* ── COUNTDOWN ──────────────────────────── */
+function updateCountdown() {
+  const diff = Math.max(0, POLL_EXPIRY - Date.now());
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+}
+
+/* ── INTERACTIONS ───────────────────────── */
+function toggleSport(el) {
+  el.classList.toggle('selected');
+  const s = el.dataset.sport;
+  selectedSports.has(s) ? selectedSports.delete(s) : selectedSports.add(s);
+  document.getElementById('sport-error').style.display = 'none';
+}
+
+function toggleFreq(el) {
+  el.classList.toggle('selected');
+  const f = el.dataset.freq;
+  selectedFreqs.has(f) ? selectedFreqs.delete(f) : selectedFreqs.add(f);
+  document.getElementById('freq-error').style.display = 'none';
+}
+
+function selectTower(el) {
+  document.querySelectorAll('.tower-chip').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTower = el.dataset.tower;
+}
+
+function selectOption(el, group) {
+  const parent = el.closest('.option-list');
+  parent.querySelectorAll('.option-item').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTiming = el.dataset.timing;
+  document.getElementById('timing-error').style.display = 'none';
+}
+
+/* ── SUPABASE ───────────────────────────── */
+async function sbRequest(endpoint, opts = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+    headers: {
+      'apikey': SUPABASE_ANON,
+      'Authorization': `Bearer ${SUPABASE_ANON}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      ...(opts.headers || {})
+    },
+    ...opts
+  });
+  if (!res.ok) throw new Error(await res.text());
+  const t = await res.text();
+  return t ? JSON.parse(t) : null;
+}
+
+async function insertVote(v) {
+  return sbRequest('poll_votes', { method: 'POST', body: JSON.stringify(v) });
+}
+
+async function fetchResults() {
+  const rows = await sbRequest('poll_votes?select=sports,timing,freq&limit=10000');
+  if (!rows || !rows.length) return { sports:{}, timing:{}, freq:{}, total:0 };
+  const out = { sports:{}, timing:{}, freq:{}, total: rows.length };
+  rows.forEach(r => {
+    (r.sports || []).forEach(s => { out.sports[s] = (out.sports[s] || 0) + 1; });
+    if (r.timing) out.timing[r.timing] = (out.timing[r.timing] || 0) + 1;
+    // freq is now an array in Supabase (text[])
+    (r.freq || []).forEach(f => { out.freq[f] = (out.freq[f] || 0) + 1; });
+  });
+  return out;
+}
+
+/* ── LOCAL FALLBACK ─────────────────────── */
+function localFallbackStore(v) {
+  const key = 'tw_local_agg_v3';
+  const r = JSON.parse(localStorage.getItem(key) || '{"sports":{},"timing":{},"freq":{},"total":0}');
+  r.total++;
+  (v.sports || []).forEach(s => { r.sports[s] = (r.sports[s] || 0) + 1; });
+  if (v.timing) r.timing[v.timing] = (r.timing[v.timing] || 0) + 1;
+  (v.freq || []).forEach(f => { r.freq[f] = (r.freq[f] || 0) + 1; });
+  localStorage.setItem(key, JSON.stringify(r));
+}
+
+async function safeResults() {
+  try { return await fetchResults(); }
+  catch(e) {
+    return JSON.parse(localStorage.getItem('tw_local_agg_v3') || '{"sports":{},"timing":{},"freq":{},"total":0}');
+  }
+}
+
+/* ── SUBMIT ─────────────────────────────── */
+async function submitPoll() {
+  let valid = true;
+  if (!selectedSports.size) { showErr('sport-error');  valid = false; }
+  if (!selectedTiming)       { showErr('timing-error'); valid = false; }
+  if (!selectedFreqs.size)   { showErr('freq-error');   valid = false; }
+
+  if (!valid) {
+    const first = document.querySelector('.field-error[style*="flex"]');
+    first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const vote = {
+    name:       document.getElementById('voter-name').value.trim() || null,
+    tower:      selectedTower || null,
+    sports:     [...selectedSports],
+    timing:     selectedTiming,
+    freq:       [...selectedFreqs],
+    comments:   document.getElementById('voter-comments').value.trim() || null,
+    created_at: new Date().toISOString()
+  };
+
+  try { await insertVote(vote); }
+  catch(e) { console.warn('Supabase not wired yet, using local fallback:', e.message); localFallbackStore(vote); }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ voted: true, ts: Date.now() }));
+
+  launchConfetti();
+
+  /* Transition: form scales down then results screen fades in */
+  const formBody = document.getElementById('form-body');
+  formBody.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+  formBody.style.opacity = '0';
+  formBody.style.transform = 'scale(0.96) translateY(-10px)';
+
+  setTimeout(() => {
+    document.getElementById('poll-screen').style.display = 'none';
+    const ss = document.getElementById('success-screen');
+    ss.style.display = 'block';
+    ss.style.opacity = '0';
+    ss.style.transition = 'opacity 0.5s ease';
+    requestAnimationFrame(() => { ss.style.opacity = '1'; });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    loadAndRender();
+    setInterval(loadAndRender, 8000);
+  }, 450);
+}
+
+function showErr(id) {
+  const el = document.getElementById(id);
+  el.style.display = 'flex';
+}
+
+/* ── METADATA MAPS ──────────────────────── */
+const SPORT_META = {
+  'ipl':           { label: 'IPL 2026 — Playoffs & Final',  emoji: '🏏' },
+  'ucl':           { label: 'Champions League Final',        emoji: '⭐' },
+  'womens-t20':    { label: "Women's T20 World Cup",         emoji: '🏆' },
+  'fifa':          { label: 'FIFA World Cup 2026',            emoji: '🌍' },
+  'cricket-india': { label: 'India International Cricket',   emoji: '🏏' },
+  'wimbledon':     { label: 'Wimbledon 2026',                 emoji: '🎾' },
+  'f1':            { label: 'Formula 1',                     emoji: '🏎' },
+  'cwg':           { label: 'Commonwealth Games',            emoji: '🏅' },
+};
+
+const TIMING_META = {
+  'evening':   { label: 'Evenings (7–11 PM)',       emoji: '🌆' },
+  'latenight': { label: 'Late nights (11 PM–2 AM)', emoji: '🌙' },
+  'both':      { label: 'Both / Flexible',           emoji: '✅' },
+  'weekend':   { label: 'Weekends only',             emoji: '📅' },
+};
+
+const FREQ_META = {
+  'every':     { label: 'Every match',       emoji: '📺' },
+  'india':     { label: 'India matches only',emoji: '🇮🇳' },
+  'knockouts': { label: 'Knockouts & Finals',emoji: '🔥' },
+  'weekend':   { label: 'Weekend fixtures',  emoji: '📅' },
+};
+
+/* ── RENDER ─────────────────────────────── */
+function renderCat(data, meta, total, barCls, containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
+  if (!sorted.length) { el.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:4px 0 12px">No responses yet.</div>'; return; }
+
+  el.innerHTML = sorted.map(([k, count]) => {
+    const m = meta[k] || { label: k, emoji: '•' };
+    const pct = total ? Math.round((count / total) * 100) : 0;
+    return `
+    <div class="result-row">
+      <span class="result-emoji">${m.emoji}</span>
+      <div class="result-right">
+        <div class="result-meta">
+          <span class="result-name">${m.label}</span>
+          <span class="result-stat">${count} · ${pct}%</span>
+        </div>
+        <div class="result-track">
+          <div class="result-fill ${barCls}" data-pct="${pct}" style="width:0%"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  /* Animate bars after paint */
+  requestAnimationFrame(() => {
+    el.querySelectorAll('.result-fill').forEach((bar, i) => {
+      setTimeout(() => { bar.style.width = bar.dataset.pct + '%'; }, i * 100);
+    });
+  });
+}
+
+function renderTicker(r) {
+  const top = Object.entries(r.sports || {}).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  if (!top.length) return;
+  const items = top.map(([k, count]) => {
+    const m = SPORT_META[k] || { label: k, emoji: '•' };
+    const pct = r.total ? Math.round((count / r.total) * 100) : 0;
+    return `<span class="ticker-item"><span class="ticker-live">Live</span>&nbsp; ${m.emoji} <strong>${m.label}</strong> — ${pct}% of residents interested</span>`;
+  });
+  const doubled = [...items, ...items].join('');
+  document.getElementById('ticker-track').innerHTML = doubled;
+}
+
+function animateCount(el, target, duration = 1200) {
+  const start = Date.now();
+  const from = parseInt(el.textContent) || 0;
+  function step() {
+    const progress = Math.min((Date.now() - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(from + (target - from) * ease);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+async function loadAndRender() {
+  const r = await safeResults();
+  const t = r.total || 0;
+
+  /* Hero count */
+  const heroCount = document.getElementById('vote-count-hero');
+  if (heroCount) animateCount(heroCount, t);
+
+  /* Results */
+  const totalEl = document.getElementById('results-total');
+  if (totalEl) {
+    totalEl.innerHTML = `<strong>${t}</strong> resident${t !== 1 ? 's have' : ' has'} responded out of ${TOTAL_UNITS} units`;
+  }
+
+  renderCat(r.sports, SPORT_META, t, 'sport',  'results-sports');
+  renderCat(r.timing, TIMING_META, t,'timing', 'results-timing');
+  renderCat(r.freq,   FREQ_META,   t,'freq',   'results-freq');
+  renderTicker(r);
+}
+
+/* ── SECTION REVEAL OBSERVER ────────────── */
+function initReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.glass-section').forEach(el => observer.observe(el));
+}
+
+/* ── CONFETTI ───────────────────────────── */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const COLORS = ['#C9922A','#E8B84A','#1A2744','#B84E2C','#F0EDE8','#4ADE80'];
+  const pieces = Array.from({ length: 100 }, () => ({
+    x:          Math.random() * canvas.width,
+    y:          -10 - Math.random() * 120,
+    r:          2.5 + Math.random() * 5,
+    dy:         1.5 + Math.random() * 3,
+    dx:         0,
+    tilt:       Math.random() * 10 - 5,
+    tiltAngle:  0,
+    tiltSpeed:  0.04 + Math.random() * 0.06,
+    color:      COLORS[Math.floor(Math.random() * COLORS.length)],
+    shape:      Math.random() > 0.6 ? 'rect' : 'circle',
+    opacity:    0.8 + Math.random() * 0.2
+  }));
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      if (p.shape === 'rect') {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.tiltAngle);
+        ctx.fillRect(-p.r, -p.r * 0.4, p.r * 2, p.r * 0.8);
+        ctx.restore();
+      } else {
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      p.y  += p.dy;
+      p.dx  = Math.sin(frame * 0.015 + p.tilt) * 1.2;
+      p.x  += p.dx;
+      p.tiltAngle += p.tiltSpeed;
+      if (p.y > canvas.height + 20) p.opacity -= 0.04;
+    });
+    ctx.globalAlpha = 1;
+    frame++;
+    if (frame < 240) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+
+/* ── INIT ───────────────────────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  initMode();
+  initParticles();
+  initStarField();
+  initRangoli();
+  initShootingStars();
+  initReveal();
+
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+
+  /* Comment character counter */
+  const commentArea = document.getElementById('voter-comments');
+  const commentCount = document.getElementById('comment-count');
+  if (commentArea && commentCount) {
+    commentArea.addEventListener('input', () => {
+      commentCount.textContent = commentArea.value.length;
+    });
+  }
+
+  /* Fetch live count for poll screen */
+  safeResults().then(r => {
+    const el = document.getElementById('vote-count-hero');
+    if (el && r.total) animateCount(el, r.total);
+  }).catch(() => {});
+
+  /* Already voted? */
+  if (localStorage.getItem(STORAGE_KEY)) {
+    document.getElementById('voted-banner').classList.add('show');
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('submit-btn').textContent = 'Already submitted ✓';
+    document.getElementById('poll-screen').style.display = 'none';
+    document.getElementById('success-screen').style.display = 'block';
+    loadAndRender();
+    setInterval(loadAndRender, 8000);
+  }
+});
+
+</script>
+</body>
+</html>
